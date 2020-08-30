@@ -5,13 +5,17 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import uploadToAnonymousFilesAsync from "anonymous-files";
 import logo from './assets/favicon.png';
+var name = 'Dan'
+
 
 export default function App() {
   const [selectedImage, setSelectedImage] = React.useState(null);
+
   let openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
 
     if (permissionResult.granted === false) {
+
       alert("Permission to access camera roll is required!");
       return;
     }
@@ -22,19 +26,25 @@ export default function App() {
       return;
     }
 
-    setSelectedImage({localUri: pickerResult.uri});
-
-    console.log(pickerResult);
+    if (Platform.OS === 'web') {
+      let remoteUri = await uploadToAnonymousFilesAsync(pickerResult.uri);
+      setSelectedImage({ localUri: pickerResult.uri, remoteUri });
+    }
+    else {
+      setSelectedImage({ localUri: pickerResult.uri, remoteUri: null });
+    }
   };
 
   let openShareDialogAsync = async () => {
     if (!(await Sharing.isAvailableAsync())) {
-      alert("Uh oh, sharing isn't available on your platform");
+      alert(`The image is available for sharing at: ${selectedImage.remoteUri}`);
       return;
     }
 
     await Sharing.shareAsync(selectedImage.localUri);
   };
+
+
   if (selectedImage !== null) {
     return (
         <View style = {styles.container} >
@@ -58,7 +68,9 @@ export default function App() {
       <TouchableOpacity
         onPress={openImagePickerAsync}
         style ={styles.button}>
-        <Text style = {styles.buttonText}>Pick a photo</Text>
+
+        <Text style = {styles.buttonText}>Share</Text>
+
       </TouchableOpacity>
       <StatusBar style="auto" />
     </View>
@@ -89,6 +101,7 @@ const styles = StyleSheet.create({
       backgroundColor: "grey",
         padding: 20,
         borderRadius: 5,
+        marginTop: 15,
     },
     buttonText: {
       fontSize: 20,
