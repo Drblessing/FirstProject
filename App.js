@@ -1,16 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import uploadToAnonymousFilesAsync from "anonymous-files";
-import logo from './assets/favicon.png';
-var name = 'Dan'
+import logo from './assets/BTC.png';
+
+
 
 
 export default function App() {
   const [selectedImage, setSelectedImage] = React.useState(null);
-
+  const [name,setName] = React.useState('Danny');
+  const [acct_id,setAcct_id] = React.useState('0000000000000000')
   let openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
 
@@ -23,6 +25,7 @@ export default function App() {
     let pickerResult = await ImagePicker.launchImageLibraryAsync();
 
     if (pickerResult.cancelled === true) {
+
       return;
     }
 
@@ -52,8 +55,14 @@ export default function App() {
             source={{uri: selectedImage.localUri}}
             style = {styles.thumbnail}
             />
-        <TouchableOpacity onPress={openShareDialogAsync} style={styles.button}>
+        <TouchableOpacity onPress={() => alert('Psyche! Thats the wrong number')} style={styles.button}>
           <Text style={styles.buttonText}>Share this photo</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress = {() => setSelectedImage(null)}style ={styles.button}>
+
+          <Text style = {styles.buttonText}>Nah</Text>
+
         </TouchableOpacity>
         </View>
     );
@@ -61,17 +70,19 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: "https://i.imgur.com/TkIrScD.png" }} style = {styles.logo}/>
+      <Image source={logo} style = {styles.logo}/>
 
-      <Text style = {styles.instructions} >To share a photo from your phone with a friend, just press the button below!</Text>
+      <Text style = {styles.instructions} > Welcome to the Porty! The simple and private cryptocurrency portfolio tracker.</Text>
 
       <TouchableOpacity
-        onPress={openImagePickerAsync}
+        onPress={() => alert('Psyche! Thats the wrong number')}
         style ={styles.button}>
 
-        <Text style = {styles.buttonText}>Share</Text>
+        <Text style = {styles.buttonText}>Share photos for some reason</Text>
 
       </TouchableOpacity>
+
+
       <StatusBar style="auto" />
     </View>
   );
@@ -88,8 +99,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
     logo:{
-      width:305,
-      height:159,
+      width:200,
+      height:200,
       marginBottom:10,
     },
     instructions: {
